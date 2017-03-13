@@ -16,23 +16,23 @@
 
 - name: "Create directory for the unix socket"
   sudo: yes
-  file: path=/var/run/php5-fpm/ recurse=yes state=directory owner=www-data group=www-data
+  file: path=/var/run/php7-fpm/ recurse=yes state=directory owner=www-data group=www-data
 
 - name: "Check if the unix sock exists"
-  stat: path=/var/run/php5-fpm/wordpress.sock
+  stat: path=/var/run/php7-fpm/wordpress.sock
   register: php_sock
 
 - name: "Touch the unix sock"
   sudo: yes
-  file: path=/var/run/php5-fpm/wordpress.sock state=touch owner=www-data group=www-data
+  file: path=/var/run/php7-fpm/wordpress.sock state=touch owner=www-data group=www-data
   notify: restart nginx
   when: not php_sock.stat.exists
 
-- name: "Disable php5-fpm default config"
+- name: "Disable php7-fpm default config"
   sudo: yes
-  command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
+  command: mv /etc/php7/fpm/pool.d/www.conf /etc/php7/fpm/pool.d/www.disabled creates=/etc/php7/fpm/pool.d/www.disabled
 
-- name: "Copy php5-fpm configuration"
+- name: "Copy php7-fpm configuration"
   sudo: yes
-  template: src=php5-fpm.conf dest=/etc/php5/fpm/pool.d/wordpress.conf
-  notify: restart php5-fpm
+  template: src=php7-fpm.conf dest=/etc/php7/fpm/pool.d/wordpress.conf
+  notify: restart php7-fpm
