@@ -1,6 +1,6 @@
 ---
 - name: "Install Nginx, php7-fpm, Mysql and php7-mysql"
-  sudo: yes
+  become: yes
   apt: "pkg={{item}} state=latest update_cache=true"
   with_items:
     - nginx

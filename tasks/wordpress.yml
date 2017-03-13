@@ -1,14 +1,14 @@
 ---
 - name: "Download wordpress"
-  sudo: yes
+  become: yes
   get_url: "url={{ storyteller_wp_file_url }}/{{ storyteller_wp_file }} dest=/srv/{{ storyteller_wp_file }} sha256sum='{{ storyteller_wp_sha256sum }}'"
 
 - name: "Extract archive"
-  sudo: yes
+  become: yes
   unarchive: "src=/srv/{{ storyteller_wp_file }} dest=/srv copy=no creates=/srv/wordpress"
 
 - name: "Detect if there is a wp-config file"
-  sudo: yes
+  become: yes
   stat: path=/srv/wordpress/wp-config.php
   register: wp_config
 
@@ -18,10 +18,10 @@
   when: not wp_config.stat.exists
 
 - name: "Copy Wordpress config"
-  sudo: yes
+  become: yes
   template: src=wp-config.php dest=/srv/wordpress/
   when: not wp_config.stat.exists
 
 - name: "Change ownership of Wordpress installation"
-  sudo: yes
+  become: yes
   file: path=/srv/wordpress/ owner=www-data group=www-data state=directory recurse=yes
