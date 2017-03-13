@@ -35,4 +35,4 @@
 - name: "Copy php7-fpm configuration"
   become: yes
   template: src=php7-fpm.conf dest=/etc/php/7.0/fpm/pool.d/wordpress.conf
-  notify: restart php7-fpm
+  notify: restart php7.0-fpm
