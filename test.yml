@@ -1,5 +1,5 @@
 ---
 - hosts: all
-  remote_user: root
+  remote_user: ubuntu
   roles:
     - { role: ansible-role-storyteller }
