@@ -4,6 +4,7 @@ storyteller_mysql_root_password: "{{ lookup('env', 'MYSQL_ROOT_PASS') }}"
 # Wordpress
 storyteller_wp_file_url: "http://wordpress.org"
 storyteller_wp_file: "wordpress-4.7.3.tar.gz"
+storyteller_wp_path: "/srv"
 storyteller_wp_sha256sum: "e715069fdab049ec668cd74e57cabcb23583dc4a84c5e330c430cbe8998f6d89"
 storyteller_wp_db_name: wordpress
 storyteller_wp_db_user: wordpress

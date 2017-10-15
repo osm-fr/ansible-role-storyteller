@@ -36,6 +36,11 @@ The tar.gz wordpress file sha256 sum. To verify the downloaded file integrity:
 storyteller_wp_sha256sum: "cd2ecbbc50aa2698eb13b01536a9f1f491dac670827d791432dabd94cc4bb28d"
 ```
 
+The path where to install wordpress:
+```
+storyteller_wp_path: "/srv"
+```
+
 The wordpress database name:
 ```
 storyteller_wp_db_name: wordpress

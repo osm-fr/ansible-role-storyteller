@@ -1,15 +1,15 @@
 ---
 - name: "Download wordpress"
   become: yes
-  get_url: "url={{ storyteller_wp_file_url }}/{{ storyteller_wp_file }} dest=/srv/{{ storyteller_wp_file }} sha256sum='{{ storyteller_wp_sha256sum }}'"
+  get_url: "url={{ storyteller_wp_file_url }}/{{ storyteller_wp_file }} dest=/{{ storyteller_wp_path }}/{{ storyteller_wp_file }} sha256sum='{{ storyteller_wp_sha256sum }}'"
 
 - name: "Extract archive"
   become: yes
-  unarchive: "src=/srv/{{ storyteller_wp_file }} dest=/srv copy=no creates=/srv/wordpress"
+  unarchive: "src=/{{ storyteller_wp_path }}/{{ storyteller_wp_file }} dest=/{{ storyteller_wp_path }} copy=no creates=/{{ storyteller_wp_path }}/wordpress"
 
 - name: "Detect if there is a wp-config file"
   become: yes
-  stat: path=/srv/wordpress/wp-config.php
+  stat: path=/{{ storyteller_wp_path }}/wordpress/wp-config.php
   register: wp_config
 
 - name: "Fetch salts for wordpress config"
@@ -19,9 +19,9 @@
 
 - name: "Copy Wordpress config"
   become: yes
-  template: src=wp-config.php dest=/srv/wordpress/
+  template: src=wp-config.php dest=/{{ storyteller_wp_path }}/wordpress/
   when: not wp_config.stat.exists
 
 - name: "Change ownership of Wordpress installation"
   become: yes
-  file: path=/srv/wordpress/ owner=www-data group=www-data state=directory recurse=yes
+  file: path=/{{ storyteller_wp_path }}/wordpress/ owner=www-data group=www-data state=directory recurse=yes
