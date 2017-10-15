@@ -1,14 +1,36 @@
 ---
+- name: "Create account"
+  user:
+    name: "{{ storyteller_wp_user }}"
+    shell: "/bin/bash"
+    system: no
+
+- name: "Create account group"
+  group:
+    name: "{{ storyteller_wp_user }}"
+
+- name: "Create wordpress directory"
+  become: yes
+  file:
+    path: "/{{ storyteller_wp_path }}"
+    state: directory
+    owner: "{{ storyteller_wp_user }}"
+    group: "{{ storyteller_wp_user }}"
+    force: no
+
 - name: "Download wordpress"
   become: yes
+  become_user: "{{ storyteller_wp_user }}"
   get_url: "url={{ storyteller_wp_file_url }}/{{ storyteller_wp_file }} dest=/{{ storyteller_wp_path }}/{{ storyteller_wp_file }} sha256sum='{{ storyteller_wp_sha256sum }}'"
 
 - name: "Extract archive"
   become: yes
+  become_user: "{{ storyteller_wp_user }}"
   unarchive: "src=/{{ storyteller_wp_path }}/{{ storyteller_wp_file }} dest=/{{ storyteller_wp_path }} copy=no creates=/{{ storyteller_wp_path }}/wordpress"
 
 - name: "Detect if there is a wp-config file"
   become: yes
+  become_user: "{{ storyteller_wp_user }}"
   stat: path=/{{ storyteller_wp_path }}/wordpress/wp-config.php
   register: wp_config
 
@@ -19,9 +41,10 @@
 
 - name: "Copy Wordpress config"
   become: yes
+  become_user: "{{ storyteller_wp_user }}"
   template: src=wp-config.php dest=/{{ storyteller_wp_path }}/wordpress/
   when: not wp_config.stat.exists
 
-- name: "Change ownership of Wordpress installation"
+- name: "Change ownership of Wordpress upload directory"
   become: yes
-  file: path=/{{ storyteller_wp_path }}/wordpress/ owner=www-data group=www-data state=directory recurse=yes
+  file: path=/{{ storyteller_wp_path }}/wordpress/wp-content/upload/ owner=www-data group=www-data state=directory recurse=yes

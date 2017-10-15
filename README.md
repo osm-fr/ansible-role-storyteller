@@ -41,6 +41,11 @@ The path where to install wordpress:
 storyteller_wp_path: "/srv"
 ```
 
+The user which owns wordpress files (use www-data if you want to update through website):
+```
+storyteller_wp_user: "www-data"
+```
+
 The wordpress database name:
 ```
 storyteller_wp_db_name: wordpress
