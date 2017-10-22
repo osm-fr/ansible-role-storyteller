@@ -3,3 +3,5 @@
 - include: database.yml tags=database
 - include: config.yml tags=config
 - include: wordpress.yml tags=wordpress
+- include: wordpress-cli.yml tags=wordpress
+  when: storyteller_wp_cli != 'no'

@@ -1,0 +1,76 @@
+- name: "Download wordpress wp-cli"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  get_url: "url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/{{ storyteller_wp_path }}/wp-cli.phar"
+
+- name: "Download wordpress wp-cli signature"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  get_url: "url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar.gpg dest=/{{ storyteller_wp_path }}/wp-cli.phar.gpg"
+
+- name: "Download wordpress key"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  copy:
+    src: wordpress.key
+    dest: "/{{ storyteller_wp_path }}/wordpress.key"
+
+- name: "Import wordpress key"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  command: gpg --import wordpress.key
+  args:
+    chdir: "/{{ storyteller_wp_path }}"
+
+- name: "Check wordpress wp-cli signature"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  command: gpg --verify wp-cli.phar.gpg
+  args:
+    chdir: "/{{ storyteller_wp_path }}"
+
+- name: "Add /{{ storyteller_wp_path }}/(bin,.wp-cli)"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  file:
+    dest: "/{{ storyteller_wp_path }}/{{ item }}"
+    state: directory
+    owner: "{{ storyteller_wp_user }}"
+  with_items:
+    - bin
+    - .wp-cli
+
+- name: "Link wp-cli"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  file:
+    state: link
+    src: "/{{ storyteller_wp_path }}/wp-cli.phar"
+    dest: "/{{ storyteller_wp_path }}/bin/wp"
+
+- name: "Add +x to wp-cli"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  file:
+    dest: "/{{ storyteller_wp_path }}/wp-cli.phar"
+    mode: "a+x"
+
+- name: "Configure PATH"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  lineinfile:
+    dest: "/home/{{ storyteller_wp_user }}/.bashrc"
+    state: present
+    line: "export PATH=$PATH:/{{ storyteller_wp_path }}/bin"
+
+- name: "Detect if there is a wp-cli-config file"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  stat: path="/{{ storyteller_wp_path }}/.wp-cli/config.yml"
+  register: wp_cli_config
+
+- name: "Copy Wordpress cli config"
+  become: yes
+  become_user: "{{ storyteller_wp_user }}"
+  template: src=wp-cli.yml.j2 dest="/home/{{ storyteller_wp_user }}/.wp-cli/config.yml"
+  when: not wp_cli_config.stat.exists

@@ -10,4 +10,5 @@ storyteller_wp_sha256sum: "e715069fdab049ec668cd74e57cabcb23583dc4a84c5e330c430c
 storyteller_wp_db_name: wordpress
 storyteller_wp_db_user: wordpress
 storyteller_wp_db_password: "{{ lookup('env', 'WP_DB_PASS') }}"
+storyteller_wp_cli: "no"
 storyteller_hostname: localhost
