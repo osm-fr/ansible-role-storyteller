@@ -71,6 +71,9 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
   $_SERVER['HTTPS'] = 'on';
 }
 
+define('FORCE_SSL_LOGIN', true );
+define('FORCE_SSL_ADMIN', true );
+
 
 /* That's all, stop editing! Happy blogging. */
 
